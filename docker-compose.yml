@@ -1,0 +1,38 @@
+version: '3.1'
+
+services:
+  php:
+    image: php:apache
+    ports:
+      - 8008:80
+    volumes:
+      - ./api-code:/var/www/html/
+      
+  wordpress:
+    image: wordpress
+    ports:
+      - 8000:80
+    environment:
+      WORDPRESS_DB_HOST: db:3306
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: wordpress
+      WORDPRESS_DB_NAME: wordpress
+    volumes:
+      - ./wordpress:/var/www/html
+      - ./blankslate:/var/www/html/wp-content/themes/blankslate
+      - ./acquisition-flow-plugin:/var/www/html/wp-content/plugins/acquisition-flow
+
+  db:
+    image: mariadb
+    restart: always
+    environment:
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: wordpress
+      MYSQL_RANDOM_ROOT_PASSWORD: '1'
+    volumes:
+      - db:/var/lib/mysql
+
+volumes:
+  wordpress:
+  db:
